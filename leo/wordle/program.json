@@ -1,0 +1,10 @@
+{
+    "program": "wordle.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkp6gWqZqoix6G7sb61RMJfTUtiKejXUbaPthGzGbWNtdaN",
+        "address": "aleo1ynccfwevfsw8vayzzx3qlv4avwzh3t0n399hrnpd732jm6jyacpszpf80s"
+    },
+    "license": "MIT"
+}

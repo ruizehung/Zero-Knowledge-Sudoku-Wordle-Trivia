@@ -3,6 +3,7 @@ import { AppBar, Box, Button, Container, CssBaseline, ThemeProvider, Toolbar, Ty
 import SudoKu from './components/Sudoku/Sudoku';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import Aleo from './components/Aleo/Aleo';
+import { WordleApp } from './components/Wordle/WordleApp';
 
 function App() {
   const mdTheme = createTheme();
@@ -25,11 +26,14 @@ function App() {
               >
                 Zero Knowledge Games
               </Typography>
-              <Button sx={{ my: 2, color: 'black', display: 'block' }} onClick={() => navigate("/aleo")}>
-                Aleo
-              </Button>
               <Button sx={{ my: 2, color: 'black', display: 'block' }} onClick={() => navigate("/sudoku")}>
                 Sudoku
+              </Button>
+              <Button sx={{ my: 2, color: 'black', display: 'block' }} onClick={() => navigate("/wordle")}>
+                Wordle
+              </Button>
+              <Button sx={{ my: 2, color: 'black', display: 'block' }} onClick={() => navigate("/aleo")}>
+                Aleo
               </Button>
             </Toolbar>
           </AppBar>
@@ -49,10 +53,9 @@ function App() {
             <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
               <Routes>
                 <Route path="/sudoku" element={<SudoKu />} />
+                <Route path="/wordle" element={<WordleApp />} />
                 <Route path="/aleo" element={<Aleo />} />
-                {/* <Route path="/quiz/:quiz_lti_assignment_id/pair/:pair_id" element={<PairReportPage />} /> */}
               </Routes>
-              
             </Container>
           </Box>
         </Box>

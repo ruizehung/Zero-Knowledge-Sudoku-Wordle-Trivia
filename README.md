@@ -35,3 +35,5 @@
 - `npx hardhat run --network localhost scripts/deploy.ts` to deploy sudoku verifier contract. Take a note of the address that the contract is deployed to, and set that in `SudoKuVerifierNoirContractAddress` in `frontend/src/constant.ts`.
 
 
+
+Note: Wordle frontend is copied from https://github.com/iamshaunjp/React-Wordle/tree/lesson-15
