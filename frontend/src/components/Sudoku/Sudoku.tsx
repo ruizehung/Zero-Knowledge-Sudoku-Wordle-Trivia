@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import { Buffer } from 'buffer';
 
 import SudokuVerifierABI from "../../abi/SudokuVerifier.json";
+import { SudoKuVerifierNoirContractAddress } from '../../constant';
 
 export default function SudoKu() {
     const [sudokuArray, setSudokuArray] = useState<string[][]>([]); // The sudoku array user is working on
@@ -171,7 +172,7 @@ export default function SudoKu() {
         const provider = new ethers.BrowserProvider(window.ethereum!);
         await provider.send("eth_requestAccounts", []);
         const signer = await provider.getSigner();
-        const sudokuVerifier = new ethers.Contract("0x5FbDB2315678afecb367f032d93F642f64180aa3", SudokuVerifierABI["abi"], signer);
+        const sudokuVerifier = new ethers.Contract(SudoKuVerifierNoirContractAddress, SudokuVerifierABI["abi"], signer);
         try {
             const result = await sudokuVerifier.verify(bytes);
             console.log(result);
