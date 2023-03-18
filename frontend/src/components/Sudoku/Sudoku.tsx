@@ -2,6 +2,10 @@ import './Sudoku.css';
 import { Paper, Box, Grid, Stack, CircularProgress, Button, TextField, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Snackbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { fetchWithTimeout } from '../../utils/utils';
+import { ethers } from "ethers";
+import { Buffer } from 'buffer';
+
+import SudokuVerifierABI from "../../abi/SudokuVerifier.json";
 
 export default function SudoKu() {
     const [sudokuArray, setSudokuArray] = useState<string[][]>([]); // The sudoku array user is working on
@@ -16,6 +20,11 @@ export default function SudoKu() {
     const [openAleoDialog, setOpenAleoDialog] = useState<boolean>(false);
     const [isWaitingForAleoResponse, setIsWaitingForAleoResponse] = useState(false);
     const [aleoResponse, setAleoResponse] = useState("");
+
+    // Noir
+    const [openNoirDialog, setOpenNoirDialog] = useState<boolean>(false);
+    const [isWaitingForNoirResponse, setIsWaitingForNoirResponse] = useState(false);
+    const [noirResponse, setNoirResponse] = useState("");
 
     useEffect(() => {
         async function init() {
@@ -78,7 +87,7 @@ export default function SudoKu() {
         const solution: number[][] = [];
         for (let i = 0; i < 9; i++) {
             puzzle.push([]);
-            solution.push([])
+            solution.push([]);
             for (let j = 0; j < 9; j++) {
                 solution[i].push(parseInt(solutionArray[i][j]));
                 if (sudokuArray[i][j] !== "") {
@@ -115,6 +124,65 @@ export default function SudoKu() {
         setOpenAleoDialog(false);
     }
 
+    const handleCloseNoirDialog = () => {
+        setOpenNoirDialog(false);
+    }
+
+    const submitToNoir = async () => {
+        const puzzle: number[] = [];
+        const solution: number[] = [];
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                solution.push(parseInt(solutionArray[i][j]));
+                if (sudokuArray[i][j] !== "") {
+                    puzzle.push(parseInt(sudokuArray[i][j]));
+                } else {
+                    puzzle.push(0);
+                }
+            }
+        }
+
+        setIsWaitingForNoirResponse(true);
+        setOpenNoirDialog(true);
+        let proof = [];
+        try {
+            const response = await fetchWithTimeout("http://127.0.0.1:3456/sudoku", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ "puzzle": puzzle, "solution": solution }),
+                timeout: 240000 // 4 minute
+            });
+            const responseData = await response.json();
+            console.log(responseData);
+            proof = responseData["proof"];
+        } catch (error: any) {
+            if (error.name === 'AbortError') {
+                setAleoResponse("Request timed out!");
+            }
+            return
+        }
+        // Proof is of type number[]
+        const bytes = Buffer.from(proof);
+        console.log(bytes);
+
+        const provider = new ethers.BrowserProvider(window.ethereum!);
+        await provider.send("eth_requestAccounts", []);
+        const signer = await provider.getSigner();
+        const sudokuVerifier = new ethers.Contract("0x5FbDB2315678afecb367f032d93F642f64180aa3", SudokuVerifierABI["abi"], signer);
+        try {
+            const result = await sudokuVerifier.verify(bytes);
+            console.log(result);
+            setNoirResponse(result.toString());
+        } catch (error: any) {
+            console.log(error);
+            setNoirResponse(error.toString());
+        }
+        setIsWaitingForNoirResponse(false);
+    }
+
     return <Paper
         sx={{
             p: 2,
@@ -132,7 +200,7 @@ export default function SudoKu() {
                         </Stack> : <table id="sudoku">
                             <tbody>
                                 {
-                                    [0, 1, 2, 3, 4, 5, 6, 7, 8].map((r) => 
+                                    [0, 1, 2, 3, 4, 5, 6, 7, 8].map((r) =>
                                         <tr>
                                             <td><input type="text" defaultValue={sudokuArray[r][0]} onChange={(event) => handleInput(r, 0, event.target.value)} /></td>
                                             <td><input type="text" defaultValue={sudokuArray[r][1]} onChange={(event) => handleInput(r, 1, event.target.value)} /></td>
@@ -144,7 +212,7 @@ export default function SudoKu() {
                                             <td><input type="text" defaultValue={sudokuArray[r][7]} onChange={(event) => handleInput(r, 7, event.target.value)} /></td>
                                             <td><input type="text" defaultValue={sudokuArray[r][8]} onChange={(event) => handleInput(r, 8, event.target.value)} /></td>
                                         </tr>
-                                    )   
+                                    )
                                 }
                             </tbody>
                         </table>
@@ -164,7 +232,7 @@ export default function SudoKu() {
                             <Button onClick={submitToAleo}> Verify with Aleo </Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button> Submit to Noir </Button>
+                            <Button onClick={submitToNoir}> Submit to Noir </Button>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -183,24 +251,59 @@ export default function SudoKu() {
             <DialogContent>
                 {
                     isWaitingForAleoResponse ? <React.Fragment>
-                        <DialogContentText id="alert-dialog-description">
+                        <DialogContentText>
                             Please wait for up to 3 minutes before the verification completes.
                         </DialogContentText>
                         <Stack alignItems="center">
                             <CircularProgress />
                         </Stack>
                     </React.Fragment> :
-                        <DialogContentText id="alert-dialog-description">
+                        <DialogContentText>
                             {aleoResponse}
                         </DialogContentText>
                 }
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCloseAleoDialog} autoFocus>
-                    OK
-                </Button>
+                {
+                    !isWaitingForAleoResponse && <Button onClick={handleCloseAleoDialog} autoFocus>
+                        OK
+                    </Button>
+                }
             </DialogActions>
         </Dialog>
+
+        <Dialog
+            open={openNoirDialog}
+            onClose={handleCloseNoirDialog}
+        >
+            <DialogTitle id="alert-dialog-title">
+                {"Your request has been received!"}
+            </DialogTitle>
+            <DialogContent>
+                {
+                    isWaitingForNoirResponse ? <React.Fragment>
+                        <DialogContentText>
+                            Please wait for up to 20 seconds before the verification completes.
+                        </DialogContentText>
+                        <Stack alignItems="center">
+                            <CircularProgress />
+                        </Stack>
+                    </React.Fragment> :
+                        <DialogContentText>
+                            {noirResponse}
+                        </DialogContentText>
+                }
+            </DialogContent>
+            <DialogActions>
+                {
+                    !isWaitingForNoirResponse && <Button onClick={handleCloseNoirDialog} autoFocus>
+                        OK
+                    </Button>
+                }
+
+            </DialogActions>
+        </Dialog>
+
         <Snackbar
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             open={openSudokuSnackBar}
