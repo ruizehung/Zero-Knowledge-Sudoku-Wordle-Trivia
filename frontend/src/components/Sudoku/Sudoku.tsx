@@ -223,17 +223,16 @@ export default function SudoKu() {
                 <Grid item xs={5} style={{ marginTop: 10 }}>
                     <Grid container spacing={5}>
                         <Grid item xs={12} >
-                            {/* TODO: Implement new game button without refreshing the page */}
-                            <Button onClick={() => window.location.reload()}> New Game </Button>
-                            <Button onClick={validateSolution}> Validate Solution</Button>
-                            <Button onClick={fillInSolution}> Fill In Solution</Button>
+                            <Button variant="contained" onClick={() => window.location.reload()}> New Game </Button>
+                            <Button variant="contained" onClick={validateSolution} sx={{marginLeft: 3}}> Validate Solution</Button>
+                            <Button variant="contained" onClick={fillInSolution} sx={{marginLeft: 3}} > Fill In Solution</Button>
                         </Grid>
                         <Grid item xs={12}>
+                            <Button variant="contained" color="error" onClick={submitToAleo} sx={{marginRight: 3}}> Verify with Aleo </Button>
                             <TextField label="Aleo Private Key" variant="standard" value={aleoPrivateKey} onChange={(newValue) => setAleoPrivateKey(newValue.target.value)}></TextField>
-                            <Button onClick={submitToAleo}> Verify with Aleo </Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button onClick={submitToNoir}> Submit to Noir </Button>
+                            <Button variant="contained" color="success" onClick={submitToNoir}> Verify with Noir </Button>
                         </Grid>
                     </Grid>
                 </Grid>

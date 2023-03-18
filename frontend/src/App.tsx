@@ -31,9 +31,6 @@ function App() {
               <Button sx={{ my: 2, color: 'black', display: 'block' }} onClick={() => navigate("/sudoku")}>
                 Sudoku
               </Button>
-              <Button sx={{ my: 2, color: 'black', display: 'block' }} >
-                Connect Wallet
-              </Button>
             </Toolbar>
           </AppBar>
           <Box
