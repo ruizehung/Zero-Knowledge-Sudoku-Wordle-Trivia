@@ -16,6 +16,7 @@
     "@noir-lang/barretenberg": "^2.18.0",
     "@noir-lang/noir_wasm": "^0.10.0",
     "cors": "^2.8.5",
+    "cross-fetch": "^3.1.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2"
   },

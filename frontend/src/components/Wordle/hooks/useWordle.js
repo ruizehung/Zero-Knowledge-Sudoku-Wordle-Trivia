@@ -1,19 +1,22 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { AleoAccountProvider } from '../context/AleoAccountProvider'
 
-const useWordle = (solution) => {
-  const [turn, setTurn] = useState(0) 
+const useWordle = () => {
+  const [turn, setTurn] = useState(0)
   const [currentGuess, setCurrentGuess] = useState('')
   const [guesses, setGuesses] = useState([...Array(6)]) // each guess is an array
   const [history, setHistory] = useState([]) // each guess is a string
   const [isCorrect, setIsCorrect] = useState(false)
   const [usedKeys, setUsedKeys] = useState({}) // {a: 'grey', b: 'green', c: 'yellow'} etc
+  const [isWaiting, setIsWaiting] = useState(false)
+  const aleoAccount = useContext(AleoAccountProvider);
 
   // format a guess into an array of letter objects 
   // e.g. [{key: 'a', color: 'yellow'}]
-  const formatGuess = () => {
+  const formatGuess = (solution) => {
     let solutionArray = [...solution]
     let formattedGuess = [...currentGuess].map((l) => {
-      return {key: l, color: 'grey'}
+      return { key: l, color: 'grey' }
     })
 
     // find any green letters
@@ -23,7 +26,7 @@ const useWordle = (solution) => {
         solutionArray[i] = null
       }
     })
-    
+
     // find any yellow letters
     formattedGuess.forEach((l, i) => {
       if (solutionArray.includes(l.key) && l.color !== 'green') {
@@ -35,11 +38,34 @@ const useWordle = (solution) => {
     return formattedGuess
   }
 
+  const formatGuessFromAleoResult = (guessResult) => {
+    let formattedGuess = [...currentGuess].map((l) => {
+      return { key: l, color: 'grey' }
+    })
+
+    for (let i = 0; i < guessResult.length; i++) {
+      if (guessResult[i] === 2) {
+        formattedGuess[i].color = 'yellow';
+      } else if (guessResult[i] === 3) {
+        formattedGuess[i].color = 'green';
+      }
+    }
+
+    return formattedGuess;
+  }
+
   // add a new guess to the guesses state
   // update the isCorrect state if the guess is correct
   // add one to the turn state
   const addNewGuess = (formattedGuess) => {
-    if (currentGuess === solution) {
+    let correct = true;
+    for (let i = 0; i < formattedGuess.length; i++) {
+      if (formattedGuess[i].color !== 'green') {
+        correct = false;
+        break;
+      }
+    }
+    if (correct) {
       setIsCorrect(true)
     }
     setGuesses(prevGuesses => {
@@ -78,8 +104,28 @@ const useWordle = (solution) => {
 
   // handle keyup event & track current guess
   // if user presses enter, add the new guess
-  const handleKeyup = ({ key }) => {
+  const handleKeyup = async ({ key }) => {
     if (key === 'Enter') {
+      const guess_array = [];
+      for (let i = 0; i < currentGuess.length; i++) {
+        guess_array.push(currentGuess.charCodeAt(i) - "a".charCodeAt(0));
+      }
+      setIsWaiting(true);
+      const response = await fetch("http://127.0.0.1:3456/wordle/guess", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          guess: guess_array,
+          player_address: aleoAccount.address,
+          player_view_key: aleoAccount.view_key
+        })
+      });
+      const data = await response.json();
+      const guess_results_from_aleo = data["guess_results"];
+      setIsWaiting(false);
+
       // only add guess if turn is less than 5
       if (turn > 5) {
         console.log('you used all your guesses!')
@@ -95,13 +141,17 @@ const useWordle = (solution) => {
         console.log('word must be 5 chars.')
         return
       }
-      const formatted = formatGuess()
+      
+      // const formatted = formatGuess()
+      const formatted = formatGuessFromAleoResult(guess_results_from_aleo);
       addNewGuess(formatted)
     }
+
     if (key === 'Backspace') {
       setCurrentGuess(prev => prev.slice(0, -1))
       return
     }
+
     if (/^[A-Za-z]$/.test(key)) {
       if (currentGuess.length < 5) {
         setCurrentGuess(prev => prev + key)
@@ -109,7 +159,7 @@ const useWordle = (solution) => {
     }
   }
 
-  return {turn, currentGuess, guesses, isCorrect, usedKeys, handleKeyup}
+  return { turn, currentGuess, guesses, isCorrect, usedKeys, handleKeyup, isWaiting }
 }
 
 export default useWordle

@@ -2,13 +2,12 @@ import React, { useEffect } from 'react'
 import useWordle from './hooks/useWordle'
 
 // components
-import Grid from './Grid'
-import Keypad from './Keypad'
-import { Typography } from '@mui/material'
+import WordleGrid from './WordleGrid'
+import { Typography, CircularProgress, Stack } from '@mui/material'
 
-export default function Wordle({ solution }) {
-  const { currentGuess, guesses, turn, isCorrect, usedKeys, handleKeyup } = useWordle(solution)
-  
+export default function Wordle() {
+  const { currentGuess, guesses, turn, isCorrect, handleKeyup, isWaiting } = useWordle()
+
   useEffect(() => {
     window.addEventListener('keyup', handleKeyup)
 
@@ -26,10 +25,14 @@ export default function Wordle({ solution }) {
 
   return (
     <div>
-      <div>solution - {solution}</div>
-      <Typography variant="body1">Use your keyboard to type in gusses!</Typography>
-      <Grid guesses={guesses} currentGuess={currentGuess} turn={turn} />
-      <Keypad usedKeys={usedKeys} />
+      <Typography variant="body1">Use your keyboard to type in your gusses!</Typography>
+      <Typography variant="body1">Press Enter to submit!</Typography>
+      {
+        isWaiting && <Stack alignItems="center">
+          <CircularProgress sx={{marginTop: 1}} />
+        </Stack> 
+      }
+      <WordleGrid guesses={guesses} currentGuess={currentGuess} turn={turn} />
     </div>
   )
 }

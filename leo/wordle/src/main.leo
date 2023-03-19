@@ -23,16 +23,32 @@ program wordle.aleo {
         r5: u8
     }
 
-    record Game {
+    // Player can compare the solution_hash after each guess to make sure 
+    // the server doesn't cheat by changing the solution.
+    record GameStatePlayerView {
         owner: address,
         gates: u64,
-        solution: Word,
-        public remaining_trials: u8,
-        public guess_result: GuessResult,
-        public won: bool
+        server: address,
+        solution_hash: field, 
+        remaining_trials: u8,
+        guess_result: GuessResult,
+        won: bool
     }
 
-    transition create_game(private solution: Word) -> Game {
+    record GameStateServerView {
+        owner: address,
+        gates: u64,
+        player: address,
+        solution: Word,
+        remaining_trials: u8,
+        guess_result: GuessResult,
+        won: bool
+    }
+
+    // Return a game record private to the game creator.
+    // Also return the hash of the solution so that players can reference 
+    // it in the future to make sure the server doesn't cheat.
+    transition create_game(solution: Word, public player: address) -> (GameStateServerView, GameStatePlayerView) {
         let guess_result: GuessResult = GuessResult {
             r1: 0u8,
             r2: 0u8,
@@ -41,17 +57,32 @@ program wordle.aleo {
             r5: 0u8
         };
 
-        return Game {
+        let game_state_server_view: GameStateServerView = GameStateServerView {
             owner: self.caller,
             gates: 0u64,
+            player: player,
             solution: solution,
             remaining_trials: 6u8,
             guess_result: guess_result,
             won: false
         };
+
+        let game_state_player_view: GameStatePlayerView = GameStatePlayerView {
+            owner: player,
+            gates: 0u64,
+            server: self.caller,
+            solution_hash: BHP256::hash(solution),
+            remaining_trials: 6u8,
+            guess_result: guess_result,
+            won: false
+        };
+
+        return (game_state_server_view, game_state_player_view);
     }
 
-    transition guess(public game: Game, private guess_word: Word) -> (Game, GuessResult) {
+    transition guess(game: GameStateServerView, public player: address, public guess_word: Word) -> (GameStateServerView, GameStatePlayerView) {
+        assert(self.caller == game.owner);
+        assert(game.player == player);
         assert(game.remaining_trials > 0u8);
         
         // Extract the actual word 
@@ -185,13 +216,26 @@ program wordle.aleo {
             r5: r5
         };
 
-        return (Game {
-            owner: game.owner,
+        let game_state_server_view: GameStateServerView = GameStateServerView {
+            owner: self.caller,
             gates: 0u64,
+            player: player,
             solution: game.solution,
             remaining_trials: game.remaining_trials - 1u8,
             guess_result: guess_result,
             won: r1 == 3u8 && r2 == 3u8 && r3 == 3u8 && r4 == 3u8 && r5 == 3u8
-        }, guess_result);
+        };
+
+        let game_state_player_view: GameStatePlayerView = GameStatePlayerView {
+            owner: player,
+            gates: 0u64,
+            server: self.caller,
+            solution_hash: BHP256::hash(game.solution),
+            remaining_trials: game.remaining_trials - 1u8,
+            guess_result: guess_result,
+            won: r1 == 3u8 && r2 == 3u8 && r3 == 3u8 && r4 == 3u8 && r5 == 3u8
+        };
+
+        return (game_state_server_view, game_state_player_view);
     }    
 }
