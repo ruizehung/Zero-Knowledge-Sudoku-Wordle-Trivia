@@ -26,7 +26,7 @@ app.get('/', async (req: Request, res: Response) => {
     res.send('Express + TypeScript Server');
 });
 
-app.post('/sudoku', async (req: Request, res: Response) => {
+app.post('/noir/sudoku/proof', async (req: Request, res: Response) => {
     const buffer = fs.readFileSync('circuits/sudokuAcir.buf');
     const bytes = new Uint8Array(buffer);
     const acir = acir_from_bytes(bytes);
@@ -43,7 +43,7 @@ app.post('/sudoku', async (req: Request, res: Response) => {
 
 let lastestGameRecord = "";
 
-app.post('/wordle/new', async (req: Request, res: Response) => {
+app.post('aleo/wordle/new', async (req: Request, res: Response) => {
     console.log(`/wordle/new called with ${JSON.stringify(req.body)}`);
     if (req.body.player_address === "") {
         res.json({ error: "Player address is required" });
@@ -72,7 +72,7 @@ app.post('/wordle/new', async (req: Request, res: Response) => {
     }
 });
 
-app.post('/wordle/guess', async (req: Request, res: Response) => {
+app.post('aleo/wordle/guess', async (req: Request, res: Response) => {
     console.log(`/wordle/guess called with ${JSON.stringify(req.body)}`);
     if (req.body.guess === "" || req.body.guess == null) {
         res.json({ error: "Player guess is required" });

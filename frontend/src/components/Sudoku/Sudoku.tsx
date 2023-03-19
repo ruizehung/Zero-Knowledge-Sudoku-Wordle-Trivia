@@ -147,7 +147,7 @@ export default function SudoKu() {
         setOpenNoirDialog(true);
         let proof = [];
         try {
-            const response = await fetchWithTimeout("http://127.0.0.1:3456/sudoku", {
+            const response = await fetchWithTimeout("http://127.0.0.1:3456/noir/sudoku/proof", {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",

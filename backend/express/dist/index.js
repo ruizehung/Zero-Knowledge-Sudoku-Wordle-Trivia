@@ -32,7 +32,7 @@ app.use((0, cors_1.default)()); // Add CORS middleware
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send('Express + TypeScript Server');
 }));
-app.post('/sudoku', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/noir/sudoku/proof', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const buffer = fs_1.default.readFileSync('circuits/sudokuAcir.buf');
     const bytes = new Uint8Array(buffer);
     const acir = (0, noir_wasm_1.acir_from_bytes)(bytes);
@@ -45,7 +45,7 @@ app.post('/sudoku', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     res.json({ proof: proof });
 }));
 let lastestGameRecord = "";
-app.post('/wordle/new', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('aleo/wordle/new', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`/wordle/new called with ${JSON.stringify(req.body)}`);
     if (req.body.player_address === "") {
         res.json({ error: "Player address is required" });
@@ -72,7 +72,7 @@ app.post('/wordle/new', (req, res) => __awaiter(void 0, void 0, void 0, function
         res.json({ status: "failed" });
     }
 }));
-app.post('/wordle/guess', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('aleo/wordle/guess', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`/wordle/guess called with ${JSON.stringify(req.body)}`);
     if (req.body.guess === "" || req.body.guess == null) {
         res.json({ error: "Player guess is required" });

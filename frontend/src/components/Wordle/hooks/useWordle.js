@@ -111,7 +111,7 @@ const useWordle = () => {
         guess_array.push(currentGuess.charCodeAt(i) - "a".charCodeAt(0));
       }
       setIsWaiting(true);
-      const response = await fetch("http://127.0.0.1:3456/wordle/guess", {
+      const response = await fetch("http://127.0.0.1:3456/aleo/wordle/guess", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

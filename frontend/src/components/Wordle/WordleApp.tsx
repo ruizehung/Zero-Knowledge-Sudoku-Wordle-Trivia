@@ -14,7 +14,7 @@ export function WordleApp() {
     const startGame = async () => {
         setHasInputAleoAccount(true);
         setGameStarted(false);
-        await fetch("http://127.0.0.1:3456/wordle/new", {
+        await fetch("http://127.0.0.1:3456/aleo/wordle/new", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
