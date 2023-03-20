@@ -4,7 +4,8 @@ import { setup_generic_prover_and_verifier } from '@noir-lang/barretenberg/dest/
 import { writeFileSync } from 'fs';
 
 const CIRCUITS = [
-  { contract: 'SudokuVerifier', dir: 'sudoku', name: 'Sudoku' }
+  { contract: 'SudokuVerifier', dir: 'sudoku', name: 'Sudoku' },
+  { contract: 'WordleVerifier', dir: 'wordle', name: 'Wordle' }
 ]
 
 async function generateVerifierContracts() {

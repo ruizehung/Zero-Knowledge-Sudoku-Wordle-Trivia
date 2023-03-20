@@ -1,5 +1,10 @@
 fn main(solution:[u4;81], puzzle: pub [u4;81]) {
     constrain check_puzzle(solution, puzzle) & check_line(solution) & check_square(solution) & check_column(solution);
+    
+    // Adding hash check will result in the following error when testing 
+    // Error: WASM function standard_example__get_circuit_size aborted, error: RuntimeError: unreachable
+    // let computed_hash = std::hash::pedersen(solution);
+    // constrain solution_hash == computed_hash[0];
 }
 
 fn check_puzzle(solution: [u4;81], puzzle: [u4;81]) -> bool {

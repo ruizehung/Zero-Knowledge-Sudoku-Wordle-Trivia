@@ -5,7 +5,7 @@ import { BarretenbergWasm } from '@noir-lang/barretenberg/dest/wasm';
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "fs";
 import { resolve } from 'path';
 
-const PROOFS = ['sudoku'];
+const PROOFS = ['sudoku', 'wordle'];
 
 const DEPLOY_PATH = resolve(__dirname, '../deploy');
 const BACKEND_PATH = resolve(__dirname, '../deploy/express');

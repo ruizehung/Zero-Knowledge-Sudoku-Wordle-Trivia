@@ -1,0 +1,5 @@
+solution = [1, 2, 3, 4, 5]
+guess = [1, 2, 4, 3, 6]
+guess_result = [3, 3, 2, 2, 1]
+
+

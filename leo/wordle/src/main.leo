@@ -80,7 +80,7 @@ program wordle.aleo {
         return (game_state_server_view, game_state_player_view);
     }
 
-    transition guess(game: GameStateServerView, public player: address, public guess_word: Word) -> (GameStateServerView, GameStatePlayerView) {
+    transition guess(game: GameStateServerView, player: address, guess_word: Word) -> (GameStateServerView, GameStatePlayerView) {
         assert(self.caller == game.owner);
         assert(game.player == player);
         assert(game.remaining_trials > 0u8);
