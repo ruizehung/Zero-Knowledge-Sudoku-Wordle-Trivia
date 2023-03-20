@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import { Buffer } from 'buffer';
 
 import SudokuVerifierABI from "../../abi/SudokuVerifier.json";
-import { SudoKuVerifierNoirContractAddress } from '../../constant';
+import { ExpressBackendPort, SudoKuVerifierNoirContractAddress } from '../../constant';
 
 export default function SudoKu() {
     const [sudokuArray, setSudokuArray] = useState<string[][]>([]); // The sudoku array user is working on
@@ -37,7 +37,7 @@ export default function SudoKu() {
     }, []);
 
     async function getNewSudoku() {
-        const response = await fetch("http://127.0.0.1:8000/sudoku");
+        const response = await fetch(`http://127.0.0.1:${ExpressBackendPort}/sudoku`);
         const { puzzle, solution } = await response.json();
         const newSudokuArray: string[][] = [];
         const newSolutionArray: string[][] = [];

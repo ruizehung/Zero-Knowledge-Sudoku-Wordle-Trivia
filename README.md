@@ -19,6 +19,7 @@
 ### ZK Setup
 #### Aleo
 - Follow https://developer.aleo.org/testnet/getting_started/deploy_execute to setup a local node in development mode till step 4
+  - Note: The snarkOS commit hash I used is 8cfa1657746bcdc372207f788f093b3060aac350
 - To deploy `sudoku.aleo`:
     - `cd leo/sudoku && leo build`
     - `export PRIVATE_KEY=<PRIVATE_KEY>`

@@ -1,0 +1,10 @@
+{
+    "program": "trivia.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpHMPf1zJCNQUbEiNbF8CAgLy5J7zRizK7RmYRK1ZkXeGE",
+        "address": "aleo1f277ah0ecsknssaw7w3zz68tsj6cjag5jcrgu8qfdkec0fp52vysuuy9s2"
+    },
+    "license": "MIT"
+}

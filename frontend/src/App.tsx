@@ -4,6 +4,7 @@ import SudoKu from './components/Sudoku/Sudoku';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import Aleo from './components/Aleo/Aleo';
 import { WordleApp } from './components/Wordle/WordleApp';
+import Trivia from './components/Trivia/Trivia';
 
 function App() {
   const mdTheme = createTheme();
@@ -32,6 +33,9 @@ function App() {
               <Button sx={{ my: 2, color: 'black', display: 'block' }} onClick={() => navigate("/wordle")}>
                 Wordle
               </Button>
+              <Button sx={{ my: 2, color: 'black', display: 'block' }} onClick={() => navigate("/trivia")}>
+                Trivia
+              </Button>
               <Button sx={{ my: 2, color: 'black', display: 'block' }} onClick={() => navigate("/aleo")}>
                 Aleo
               </Button>
@@ -54,6 +58,7 @@ function App() {
               <Routes>
                 <Route path="/sudoku" element={<SudoKu />} />
                 <Route path="/wordle" element={<WordleApp />} />
+                <Route path="/trivia" element={<Trivia />} />
                 <Route path="/aleo" element={<Aleo />} />
               </Routes>
             </Container>

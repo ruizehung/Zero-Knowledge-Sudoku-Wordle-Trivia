@@ -1,5 +1,6 @@
 import { Button, Card, CardContent, Grid, Paper, TextField, Typography } from "@mui/material";
 import React from "react";
+import { ExpressBackendPort } from "../../constant";
 
 export default function Aleo() {
     const [transactionID, setTransactionID] = React.useState("");
@@ -8,7 +9,7 @@ export default function Aleo() {
     const [output, setOutput] = React.useState("");
 
     const getTranslation = async () => {
-        const response = await fetch(`http://127.0.0.1:8000/leo/transaction/${transactionID}`, {
+        const response = await fetch(`http://127.0.0.1:${ExpressBackendPort}/aleo/transaction/${transactionID}`, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
@@ -19,7 +20,7 @@ export default function Aleo() {
     }
 
     const decrypt = async () => {
-        const response = await fetch(`http://127.0.0.1:8000/leo/decrypt`, {
+        const response = await fetch(`http://127.0.0.1:${ExpressBackendPort}/aleo/decrypt`, {
             method: "POST",
             headers: {
                 "Accept": "application/json",

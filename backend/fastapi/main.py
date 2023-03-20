@@ -30,22 +30,22 @@ app.add_middleware(
 async def read_root():
     return {"Hello": "World"}
 
-@app.get("/leo/transaction/{transaction_id}")
-async def read_transaction(transaction_id: str):
-    try:
-        return requests.get(f"http://0.0.0.0:3030/testnet3/transaction/{transaction_id}").json()
-    except Exception as e:
-        return {"error": str(e)}
+# @app.get("/leo/transaction/{transaction_id}")
+# async def read_transaction(transaction_id: str):
+#     try:
+#         return requests.get(f"http://0.0.0.0:3030/testnet3/transaction/{transaction_id}").json()
+#     except Exception as e:
+#         return {"error": str(e)}
 
-@app.post("/leo/decrypt")
-async def decrypt_record(decrypt_record_input: DecryptRecordInput):
-    return {"output": decrypt_ciphertext(decrypt_record_input.view_key, decrypt_record_input.ciphertext)}
+# @app.post("/leo/decrypt")
+# async def decrypt_record(decrypt_record_input: DecryptRecordInput):
+#     return {"output": decrypt_ciphertext(decrypt_record_input.view_key, decrypt_record_input.ciphertext)}
 
-@app.get("/sudoku")
-async def get_new_sudoku():
-    sudoku = generate_valid_sudoku()
-    puzzle = generate_sudoku_puzzle(sudoku)
-    return {"puzzle": puzzle, "solution": sudoku}
+# @app.get("/sudoku")
+# async def get_new_sudoku():
+#     sudoku = generate_valid_sudoku()
+#     puzzle = generate_sudoku_puzzle(sudoku)
+#     return {"puzzle": puzzle, "solution": sudoku}
 
 @app.post("/leo/sudoku")
 async def solve_sudoku_leo(sudoku_input: SudokuInput):
@@ -56,9 +56,9 @@ async def solve_sudoku_leo(sudoku_input: SudokuInput):
     else:
         return {"success": False, "output": output}
 
-@app.post("/noir/sudoku")
-async def solve_sudoku_noir(sudoku_input: SudokuInput):
-    return sudoku_input
+# @app.post("/noir/sudoku")
+# async def solve_sudoku_noir(sudoku_input: SudokuInput):
+#     return sudoku_input
 
 
 
