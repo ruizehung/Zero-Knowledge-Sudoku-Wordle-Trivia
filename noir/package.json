@@ -1,5 +1,10 @@
 {
-  "name": "hardhat-project",
+  "name": "aleo-aztec-zk-games",
+  "scripts": {
+    "deploy": "hardhat run scripts/deploy.ts --network localhost",
+    "generate-contracts": "hardhat run scripts/generateContracts.ts",
+    "generate-compiled-circuits": "ts-node scripts/generateFrontendData.ts"
+  },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
     "@ethersproject/providers": "^5.4.7",

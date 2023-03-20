@@ -8,7 +8,7 @@ import { resolve } from 'path';
 const PROOFS = ['sudoku'];
 
 const DEPLOY_PATH = resolve(__dirname, '../deploy');
-const FRONTEND_PATH = resolve(__dirname, '../deploy/express');
+const BACKEND_PATH = resolve(__dirname, '../deploy/express');
 
 const WASM_PATHS = [
     {
@@ -47,12 +47,12 @@ const WASM_PATHS = [
         console.log('Circuit size: ', circSize);
 
         // Check if frontend directory exists, if not then create
-        if (!existsSync(FRONTEND_PATH)) {
+        if (!existsSync(BACKEND_PATH)) {
             // If it doesn't exist check deploy path first
             if (!existsSync(DEPLOY_PATH)) {
                 mkdirSync(DEPLOY_PATH);
             }
-            mkdirSync(FRONTEND_PATH);
+            mkdirSync(BACKEND_PATH);
         };
 
         // Write circuit file
@@ -71,7 +71,7 @@ const WASM_PATHS = [
     WASM_PATHS.forEach(({ dep, file, path }) => {
         console.log('Locating web assembly file for: ', dep);
         if (existsSync(path)) {
-            copyFileSync(path, `${FRONTEND_PATH}/${file}`);
+            copyFileSync(path, `${BACKEND_PATH}/${file}`);
         } else {
             console.log('Could not locate wasm file for: ', dep);
         }
