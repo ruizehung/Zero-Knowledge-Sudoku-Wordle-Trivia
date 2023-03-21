@@ -7,7 +7,7 @@ import { resolve } from 'path';
 
 const PROOFS = ['sudoku', 'wordle', 'trivia'];
 
-const DEPLOY_PATH = resolve(__dirname, '../../backend/express/circuits');
+const DEPLOY_PATH = resolve(__dirname, '../../backend/circuits');
 
 /**
  * Script to generate the necessary files to generate Noir proofs in the frontend of a React application.
