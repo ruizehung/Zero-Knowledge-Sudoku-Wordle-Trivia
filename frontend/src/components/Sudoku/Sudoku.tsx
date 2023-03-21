@@ -9,6 +9,7 @@ import SudokuVerifierABI from "../../abi/SudokuVerifier.json";
 import { ExpressBackendPort, SudoKuVerifierNoirContractAddress } from '../../constant';
 
 export default function SudoKu() {
+    const [puzzleArray, setPuzzleArray] = useState<number[][]>([]); // The original puzzle
     const [sudokuArray, setSudokuArray] = useState<string[][]>([]); // The sudoku array user is working on
     const [solutionArray, setSolutionArray] = useState<string[][]>([]); // The solution array
     const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +54,7 @@ export default function SudoKu() {
                 newSolutionArray[i].push(solution[i][j].toString());
             }
         }
+        setPuzzleArray(puzzle);
         setSudokuArray(newSudokuArray);
         setSolutionArray(newSolutionArray);
     }
@@ -83,32 +85,32 @@ export default function SudoKu() {
         setSudokuArray(solutionArray);
     }
 
-    const submitToAleo = async () => {
-        const puzzle: number[][] = [];
-        const solution: number[][] = [];
+    const getUserSolutionArray = () => {
+        const userSolutionArray: number[][] = [];
         for (let i = 0; i < 9; i++) {
-            puzzle.push([]);
-            solution.push([]);
+            userSolutionArray.push([]);
             for (let j = 0; j < 9; j++) {
-                solution[i].push(parseInt(solutionArray[i][j]));
                 if (sudokuArray[i][j] !== "") {
-                    puzzle[i].push(parseInt(sudokuArray[i][j]));
+                    userSolutionArray[i].push(parseInt(sudokuArray[i][j]));
                 } else {
-                    puzzle[i].push(0);
+                    userSolutionArray[i].push(0);
                 }
             }
         }
+        return userSolutionArray;
+    }
 
+    const submitToAleo = async () => {
         setOpenAleoDialog(true);
         setIsWaitingForAleoResponse(true);
         try {
-            const response = await fetchWithTimeout("http://127.0.0.1:8000/leo/sudoku", {
+            const response = await fetchWithTimeout(`http://127.0.0.1:${ExpressBackendPort}/aleo/sudoku`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ "puzzle": puzzle, "solution": solution, "private_key": aleoPrivateKey }),
+                body: JSON.stringify({ "puzzle": puzzleArray, "solution": getUserSolutionArray(), "private_key": aleoPrivateKey }),
                 timeout: 240000 // 4 minute
             });
             const responseData = await response.json();
@@ -130,30 +132,17 @@ export default function SudoKu() {
     }
 
     const submitToNoir = async () => {
-        const puzzle: number[] = [];
-        const solution: number[] = [];
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                solution.push(parseInt(solutionArray[i][j]));
-                if (sudokuArray[i][j] !== "") {
-                    puzzle.push(parseInt(sudokuArray[i][j]));
-                } else {
-                    puzzle.push(0);
-                }
-            }
-        }
-
         setIsWaitingForNoirResponse(true);
         setOpenNoirDialog(true);
         let proof = [];
         try {
-            const response = await fetchWithTimeout("http://127.0.0.1:3456/noir/sudoku/proof", {
+            const response = await fetchWithTimeout(`http://127.0.0.1:${ExpressBackendPort}/noir/sudoku/proof`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ "puzzle": puzzle, "solution": solution }),
+                body: JSON.stringify({ "puzzle": puzzleArray, "solution": getUserSolutionArray() }),
                 timeout: 240000 // 4 minute
             });
             const responseData = await response.json();

@@ -45,7 +45,7 @@ router.post('/new', async (req: Request, res: Response) => {
         option4: ${hashStringToNumber(options[2][3])}field,
         answer: ${hashStringToNumber(answers[2])}field
     }" --private-key ${serverAleoPrivateKey} --query "http://localhost:3030" --broadcast "http://localhost:3030/testnet3/transaction/broadcast"`
-
+    console.log(cmd);
     const { stdout: stdout_new, stderr: stderr_new } = await exec(cmd);
 
     console.log('stdout:', stdout_new);

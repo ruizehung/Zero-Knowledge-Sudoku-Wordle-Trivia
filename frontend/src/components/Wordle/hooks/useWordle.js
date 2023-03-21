@@ -122,7 +122,7 @@ const useWordle = () => {
         
         // Verify that solution hash in proof doesn't change
         if (!Buffer.from(proof).toString("hex").includes(solutionHashContext.solutionHash.substring(2))) {
-          alert(`Server is be cheating by changing the solution! Initial solution hash: ${solutionHashContext.solutionHash}. Current solution hash: 0x${Buffer.from(proof).toString("hex").substring(0, solutionHashContext.solutionHash.length)}`);
+          alert(`Server is be cheating by changing the solution! Initial solution hash: ${solutionHashContext.solutionHash}.\n Current solution hash: 0x${Buffer.from(proof).toString("hex").substring(0, solutionHashContext.solutionHash.length)}`);
         }
 
         const bytes = Buffer.from(proof);

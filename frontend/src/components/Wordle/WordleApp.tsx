@@ -1,6 +1,6 @@
 import './WordleApp.css';
-import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { Box, Button, FormControlLabel, Grid, Paper, Switch, TextField, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import Wordle from './Wordle';
 import { ZKProvider } from './context/ZKProvider';
 import { ethers } from 'ethers';
@@ -13,6 +13,19 @@ export function WordleApp() {
     const [gameStarted, setGameStarted] = useState(false);
     const [zkFramework, setZkFramework] = useState<ZK_FRAMEWORK>(ZK_FRAMEWORK.ALEO);
     const [solutionHash, setSolutionHash] = useState("");
+    const [serverShouldCheat, setServerShouldCheat] = useState(false);
+
+    useEffect(() => {
+        fetch(`http://127.0.0.1:${ExpressBackendPort}/noir/wordle/should_cheat`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                shouldCheat: false,
+            })
+        });
+    }, []);
 
     const startGameWithAleo = async () => {
         setZkFramework(ZK_FRAMEWORK.ALEO);
@@ -38,6 +51,23 @@ export function WordleApp() {
         const data = await response.json();
         setSolutionHash(data["solutionHash"]);
         setGameStarted(true);
+    }
+
+    const askServerToChangeSolution = () => {
+        fetch(`http://127.0.0.1:${ExpressBackendPort}/noir/wordle/change_solution`);
+    }
+
+    const handleSetServerShouldCheat = (event: any) => {
+        setServerShouldCheat(event.target.checked);
+        fetch(`http://127.0.0.1:${ExpressBackendPort}/noir/wordle/should_cheat`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                shouldCheat: event.target.checked,
+            })
+        });
     }
 
     return <Paper
@@ -85,8 +115,14 @@ export function WordleApp() {
                             <Grid item xs={12}>
                                 <Typography variant='h5'>Noir</Typography>
                             </Grid>
-                            <Grid item xs={4} >
+                            <Grid item xs={2} >
                                 <Button disabled={gameStarted} variant='contained' onClick={startGameWithNoir}>Start Game</Button>
+                            </Grid>
+                            <Grid item xs={5} >
+                                <Button disabled={!gameStarted} variant='contained' onClick={askServerToChangeSolution}>Simulate server changing solution</Button>
+                            </Grid>
+                            <Grid item xs={5} >
+                                <FormControlLabel control={<Switch />} checked={serverShouldCheat} onChange={handleSetServerShouldCheat} label="Server Cheat" />
                             </Grid>
                         </Grid>
                     </Grid>

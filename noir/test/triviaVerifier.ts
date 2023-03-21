@@ -28,7 +28,8 @@ describe('Trivia solidity verifier', function () {
 
     abi.answers = [123456789, 9876578, 134256743];
     const solution_buffer = pedersen.compressInputs(abi.answers.map((e: number) => Buffer.from(numToHex(e), 'hex')));
-    abi.answer_hash = `0x${solution_buffer.toString('hex')}`;
+    abi.answers_hash = `0x${solution_buffer.toString('hex')}`;
+    abi.options = [123456789, 1, 2, 3, 4, 5, 9876578, 6, 7, 8, 9, 134256743];
     abi.guesses = [123456789, 9876578, 134256743];
     abi.score = 3;
 
@@ -50,7 +51,8 @@ describe('Trivia solidity verifier', function () {
 
     abi.answers = [123456789, 9876578, 134256743];
     const solution_buffer = pedersen.compressInputs(abi.answers.map((e: number) => Buffer.from(numToHex(e), 'hex')));
-    abi.answer_hash = `0x${solution_buffer.toString('hex')}`;
+    abi.answers_hash = `0x${solution_buffer.toString('hex')}`;
+    abi.options = [123456789, 1, 2, 3, 4, 5, 9876578, 6, 7, 8, 9, 134256743];
     abi.guesses = [123456789, 9876578, 567483920147];
     abi.score = 2;
 
@@ -72,7 +74,8 @@ describe('Trivia solidity verifier', function () {
 
     abi.answers = [123456789, 9876578, 134256743];
     const solution_buffer = pedersen.compressInputs(abi.answers.map((e: number) => Buffer.from(numToHex(e), 'hex')));
-    abi.answer_hash = `0x${solution_buffer.toString('hex')}`;
+    abi.answers_hash = `0x${solution_buffer.toString('hex')}`;
+    abi.options = [123456789, 1, 2, 3, 4, 5, 9876578, 6, 7, 8, 9, 134256743];
     abi.guesses = [123456789, 987654567, 567483920147];
     abi.score = 1;
 
@@ -94,7 +97,8 @@ describe('Trivia solidity verifier', function () {
 
     abi.answers = [123456789, 9876578, 134256743];
     const solution_buffer = pedersen.compressInputs(abi.answers.map((e: number) => Buffer.from(numToHex(e), 'hex')));
-    abi.answer_hash = `0x${solution_buffer.toString('hex')}`;
+    abi.answers_hash = `0x${solution_buffer.toString('hex')}`;
+    abi.options = [123456789, 1, 2, 3, 4, 5, 9876578, 6, 7, 8, 9, 134256743];
     abi.guesses = [123456789, 9876578, 134256743];
     abi.score = 0;
 

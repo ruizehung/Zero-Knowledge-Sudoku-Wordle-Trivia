@@ -11,7 +11,7 @@ export function hashStringToNumber(str: string): number {
         hash = ((hash << 5) - hash) + chr;
         hash |= 0; // Convert to 32bit integer
     }
-    return hash;
+    return parseInt(hash.toString().replace('-', ''), 10);
 }
 
 export function generateSampleTriviaQuiz() {

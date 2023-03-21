@@ -4,9 +4,17 @@ export type SudokuABI = {
 }
 
 export type WordleABI = {
-    solution: number[];
     solution_hash: string;
+    solution: number[];
     guess: number[];
     guess_result: number[];
+}
+
+export type TriviaABI = {
+    answers_hash: string;
+    answers: number[];
+    options: number[];
+    guesses: number[];
+    score: number;
 }
 
