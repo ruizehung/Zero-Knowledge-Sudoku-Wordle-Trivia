@@ -1,8 +1,6 @@
-import { compile, acir_from_bytes } from '@noir-lang/noir_wasm';
-import { setup_generic_prover_and_verifier, create_proof, verify_proof, create_proof_with_witness } from '@noir-lang/barretenberg/dest/client_proofs';
-import { packed_witness_to_witness, serialise_public_inputs, compute_witnesses } from '@noir-lang/aztec_backend';
+import { compile } from '@noir-lang/noir_wasm';
+import { setup_generic_prover_and_verifier, create_proof, verify_proof } from '@noir-lang/barretenberg/dest/client_proofs';
 import path from 'path';
-import { readFileSync } from 'fs';
 import { expect } from 'chai';
 import { ethers } from "hardhat";
 import { Contract, ContractFactory, utils } from 'ethers';
