@@ -224,11 +224,11 @@ export default function SudoKu() {
                     <Grid container spacing={5}>
                         <Grid item xs={12} >
                             <Button variant="contained" onClick={() => window.location.reload()}> New Game </Button>
-                            <Button variant="contained" onClick={validateSolution} sx={{marginLeft: 3}}> Validate Solution</Button>
-                            <Button variant="contained" onClick={fillInSolution} sx={{marginLeft: 3}} > Fill In Solution</Button>
+                            <Button variant="contained" onClick={validateSolution} sx={{ marginLeft: 3 }}> Validate Solution</Button>
+                            <Button variant="contained" onClick={fillInSolution} sx={{ marginLeft: 3 }} > Fill In Solution</Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button variant="contained" color="error" onClick={submitToAleo} sx={{marginRight: 3}}> Verify with Aleo </Button>
+                            <Button variant="contained" color="error" onClick={submitToAleo} sx={{ marginRight: 3 }}> Verify with Aleo </Button>
                             <TextField label="Aleo Private Key" variant="standard" value={aleoPrivateKey} onChange={(newValue) => setAleoPrivateKey(newValue.target.value)}></TextField>
                         </Grid>
                         <Grid item xs={12}>
@@ -246,7 +246,7 @@ export default function SudoKu() {
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">
-                {"Your request has been received!"}
+                {isWaitingForAleoResponse ? "Your request has been received!" : "snarkOS response: "}
             </DialogTitle>
             <DialogContent>
                 {
@@ -277,7 +277,7 @@ export default function SudoKu() {
             onClose={handleCloseNoirDialog}
         >
             <DialogTitle id="alert-dialog-title">
-                {"Your request has been received!"}
+                {isWaitingForNoirResponse ? "Your request has been received!" : "Sudoku verifier smart contract response: "}
             </DialogTitle>
             <DialogContent>
                 {

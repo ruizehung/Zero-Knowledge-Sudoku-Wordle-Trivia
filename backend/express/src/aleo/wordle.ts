@@ -42,7 +42,7 @@ router.post('/new', async (req: Request, res: Response) => {
 
 router.post('/guess', async (req: Request, res: Response) => {
     console.log(`${req.originalUrl} called with ${JSON.stringify(req.body)}`);
-    if (req.body.guess === "" || req.body.guess == null) {
+    if (req.body.guess == null) {
         res.json({ error: "Player guess is required" });
         return
     }

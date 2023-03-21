@@ -1,14 +1,16 @@
 import { ethers } from "hardhat";
 
+const CONTRACTS = ["SudokuVerifier", "WordleVerifier", "TriviaVerifier"];
+
 async function main() {
-  const SudokuVerifier = await ethers.getContractFactory("SudokuVerifier");
-  const sudokuVerifier = await SudokuVerifier.deploy();
-
-  await sudokuVerifier.deployed();
-
-  console.log(
-    `SudokuVerifier deployed to ${sudokuVerifier.address}`
-  );
+  for (const contract of CONTRACTS) {
+    const c = await ethers.getContractFactory(contract);
+    const deployed_contract = await c.deploy();
+  
+    console.log(
+      `${contract} deployed to ${deployed_contract.address}`
+    );
+  }
 }
 
 // We recommend this pattern to be able to use async/await everywhere

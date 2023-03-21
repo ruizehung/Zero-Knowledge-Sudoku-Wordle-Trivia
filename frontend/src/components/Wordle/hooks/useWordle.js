@@ -1,5 +1,10 @@
 import { useState, useContext } from 'react'
-import { AleoAccountProvider } from '../context/AleoAccountProvider'
+import { ZKProvider } from '../context/ZKProvider'
+import { ExpressBackendPort, ZK_FRAMEWORK, WordleVerifierNoirContractAddress } from '../../../constant'
+import { ethers } from "ethers";
+import WordleVerifierABI from "../../../abi/WordleVerifier.json";
+import { Buffer } from 'buffer';
+import { SolutionHashProvider } from '../context/SolutionHashProvider';
 
 const useWordle = () => {
   const [turn, setTurn] = useState(0)
@@ -9,34 +14,8 @@ const useWordle = () => {
   const [isCorrect, setIsCorrect] = useState(false)
   const [usedKeys, setUsedKeys] = useState({}) // {a: 'grey', b: 'green', c: 'yellow'} etc
   const [isWaiting, setIsWaiting] = useState(false)
-  const aleoAccount = useContext(AleoAccountProvider);
-
-  // format a guess into an array of letter objects 
-  // e.g. [{key: 'a', color: 'yellow'}]
-  const formatGuess = (solution) => {
-    let solutionArray = [...solution]
-    let formattedGuess = [...currentGuess].map((l) => {
-      return { key: l, color: 'grey' }
-    })
-
-    // find any green letters
-    formattedGuess.forEach((l, i) => {
-      if (solution[i] === l.key) {
-        formattedGuess[i].color = 'green'
-        solutionArray[i] = null
-      }
-    })
-
-    // find any yellow letters
-    formattedGuess.forEach((l, i) => {
-      if (solutionArray.includes(l.key) && l.color !== 'green') {
-        formattedGuess[i].color = 'yellow'
-        solutionArray[solutionArray.indexOf(l.key)] = null
-      }
-    })
-
-    return formattedGuess
-  }
+  const zkContext = useContext(ZKProvider);
+  const solutionHashContext = useContext(SolutionHashProvider);
 
   const formatGuessFromAleoResult = (guessResult) => {
     let formattedGuess = [...currentGuess].map((l) => {
@@ -73,7 +52,7 @@ const useWordle = () => {
       newGuesses[turn] = formattedGuess
       return newGuesses
     })
-    setHistory(prevHistory => {
+    setHistory((prevHistory) => {
       return [...prevHistory, currentGuess]
     })
     setTurn(prevTurn => {
@@ -106,25 +85,58 @@ const useWordle = () => {
   // if user presses enter, add the new guess
   const handleKeyup = async ({ key }) => {
     if (key === 'Enter') {
-      const guess_array = [];
-      for (let i = 0; i < currentGuess.length; i++) {
-        guess_array.push(currentGuess.charCodeAt(i) - "a".charCodeAt(0));
-      }
+      let guess_results = [];
       setIsWaiting(true);
-      const response = await fetch("http://127.0.0.1:3456/aleo/wordle/guess", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          guess: guess_array,
-          player_address: aleoAccount.address,
-          player_view_key: aleoAccount.view_key
-        })
-      });
-      const data = await response.json();
-      const guess_results_from_aleo = data["guess_results"];
+      if (zkContext.zkFramework === ZK_FRAMEWORK.ALEO) {
+        const guess_array = [];
+        for (let i = 0; i < currentGuess.length; i++) {
+          guess_array.push(currentGuess.charCodeAt(i) - "a".charCodeAt(0));
+        }
+        const response = await fetch(`http://127.0.0.1:${ExpressBackendPort}/aleo/wordle/guess`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            guess: guess_array,
+            player_address: zkContext.aleoAddress,
+            player_view_key: zkContext.aleoViewKey
+          })
+        });
+        const data = await response.json();
+        guess_results = data["guess_results"];
+      } else {
+        const response = await fetch(`http://127.0.0.1:${ExpressBackendPort}/noir/wordle/guess`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            guess: currentGuess
+          })
+        });
+        const data = await response.json();
+
+        guess_results = data["guess_results"];
+        const proof = data["proof"];
+        
+        // Verify that solution hash in proof doesn't change
+        if (!Buffer.from(proof).toString("hex").includes(solutionHashContext.solutionHash.substring(2))) {
+          alert(`Server is be cheating by changing the solution! Initial solution hash: ${solutionHashContext.solutionHash}. Current solution hash: 0x${Buffer.from(proof).toString("hex").substring(0, solutionHashContext.solutionHash.length)}`);
+        }
+
+        const bytes = Buffer.from(proof);
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const wordleVerifier = new ethers.Contract(WordleVerifierNoirContractAddress, WordleVerifierABI["abi"], signer);
+        try {
+          await wordleVerifier.verify(bytes);
+        } catch (error) {
+          alert(`Server is be cheating! Error from proof verifier smart contract: ${error.message}`);
+        }
+      }
       setIsWaiting(false);
+
 
       // only add guess if turn is less than 5
       if (turn > 5) {
@@ -141,9 +153,9 @@ const useWordle = () => {
         console.log('word must be 5 chars.')
         return
       }
-      
+
       // const formatted = formatGuess()
-      const formatted = formatGuessFromAleoResult(guess_results_from_aleo);
+      const formatted = formatGuessFromAleoResult(guess_results);
       addNewGuess(formatted)
     }
 

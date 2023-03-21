@@ -35,7 +35,7 @@ describe('Wordle solidity verifier', function () {
     let [prover, verifier] = await setup_generic_prover_and_verifier(acir);
 
     const proof = await create_proof(prover, acir, abi);
-    
+
     const verified = await verify_proof(verifier, proof);
     expect(verified).eq(true);
 

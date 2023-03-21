@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import useWordle from './hooks/useWordle'
+import useWordle from './hooks/useWordle.js'
 
 // components
 import WordleGrid from './WordleGrid'
@@ -12,11 +12,11 @@ export default function Wordle() {
     window.addEventListener('keyup', handleKeyup)
 
     if (isCorrect) {
-      console.log('congrats, you win')
+      alert('Congrats, you win!')
       window.removeEventListener('keyup', handleKeyup)
     }
     if (turn > 5) {
-      console.log('unlucky, out of guesses')
+      alert('Unlucky, out of guesses : (')
       window.removeEventListener('keyup', handleKeyup)
     }
 
