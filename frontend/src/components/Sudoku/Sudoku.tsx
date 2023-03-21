@@ -18,7 +18,7 @@ export default function SudoKu() {
     const [sudokuSnackBarMsg, setSudokuSnackBarMsg] = useState<string>("");
 
     // Aleo
-    const [aleoPrivateKey, setAleoPrivateKey] = useState<string>("");
+    const [aleoPrivateKey, setAleoPrivateKey] = useState<string>("APrivateKey1zkpF8DDkDEmjBPUVRzb5PWeM4iYo9bVEv6m71xvr2KDtXJw");
     const [openAleoDialog, setOpenAleoDialog] = useState<boolean>(false);
     const [isWaitingForAleoResponse, setIsWaitingForAleoResponse] = useState(false);
     const [aleoResponse, setAleoResponse] = useState("");
@@ -82,7 +82,13 @@ export default function SudoKu() {
     }
 
     const fillInSolution = () => {
-        setSudokuArray(solutionArray);
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                (document.getElementById(`sudoku-${i}${j}`)! as HTMLInputElement).value = solutionArray[i][j];
+                sudokuArray[i][j] = solutionArray[i][j];
+            }
+        }
+        setSudokuArray(sudokuArray);
     }
 
     const getUserSolutionArray = () => {
@@ -183,7 +189,7 @@ export default function SudoKu() {
     >
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Grid container>
-                <Grid item xs={7} >
+                <Grid item xs={6} >
                     {
                         isLoading ? <Stack alignItems="center">
                             <CircularProgress />
@@ -192,15 +198,15 @@ export default function SudoKu() {
                                 {
                                     [0, 1, 2, 3, 4, 5, 6, 7, 8].map((r) =>
                                         <tr>
-                                            <td><input type="text" defaultValue={sudokuArray[r][0]} onChange={(event) => handleInput(r, 0, event.target.value)} /></td>
-                                            <td><input type="text" defaultValue={sudokuArray[r][1]} onChange={(event) => handleInput(r, 1, event.target.value)} /></td>
-                                            <td><input type="text" defaultValue={sudokuArray[r][2]} onChange={(event) => handleInput(r, 2, event.target.value)} /></td>
-                                            <td><input type="text" defaultValue={sudokuArray[r][3]} onChange={(event) => handleInput(r, 3, event.target.value)} /></td>
-                                            <td><input type="text" defaultValue={sudokuArray[r][4]} onChange={(event) => handleInput(r, 4, event.target.value)} /></td>
-                                            <td><input type="text" defaultValue={sudokuArray[r][5]} onChange={(event) => handleInput(r, 5, event.target.value)} /></td>
-                                            <td><input type="text" defaultValue={sudokuArray[r][6]} onChange={(event) => handleInput(r, 6, event.target.value)} /></td>
-                                            <td><input type="text" defaultValue={sudokuArray[r][7]} onChange={(event) => handleInput(r, 7, event.target.value)} /></td>
-                                            <td><input type="text" defaultValue={sudokuArray[r][8]} onChange={(event) => handleInput(r, 8, event.target.value)} /></td>
+                                            <td><input type="text" id={`sudoku-${r}0`} defaultValue={sudokuArray[r][0]} onChange={(event) => handleInput(r, 0, event.target.value)} /></td>
+                                            <td><input type="text" id={`sudoku-${r}1`} defaultValue={sudokuArray[r][1]} onChange={(event) => handleInput(r, 1, event.target.value)} /></td>
+                                            <td><input type="text" id={`sudoku-${r}2`} defaultValue={sudokuArray[r][2]} onChange={(event) => handleInput(r, 2, event.target.value)} /></td>
+                                            <td><input type="text" id={`sudoku-${r}3`} defaultValue={sudokuArray[r][3]} onChange={(event) => handleInput(r, 3, event.target.value)} /></td>
+                                            <td><input type="text" id={`sudoku-${r}4`} defaultValue={sudokuArray[r][4]} onChange={(event) => handleInput(r, 4, event.target.value)} /></td>
+                                            <td><input type="text" id={`sudoku-${r}5`} defaultValue={sudokuArray[r][5]} onChange={(event) => handleInput(r, 5, event.target.value)} /></td>
+                                            <td><input type="text" id={`sudoku-${r}6`} defaultValue={sudokuArray[r][6]} onChange={(event) => handleInput(r, 6, event.target.value)} /></td>
+                                            <td><input type="text" id={`sudoku-${r}7`} defaultValue={sudokuArray[r][7]} onChange={(event) => handleInput(r, 7, event.target.value)} /></td>
+                                            <td><input type="text" id={`sudoku-${r}8`} defaultValue={sudokuArray[r][8]} onChange={(event) => handleInput(r, 8, event.target.value)} /></td>
                                         </tr>
                                     )
                                 }
@@ -209,7 +215,7 @@ export default function SudoKu() {
                     }
 
                 </Grid>
-                <Grid item xs={5} style={{ marginTop: 10 }}>
+                <Grid item xs={6} style={{ marginTop: 10 }}>
                     <Grid container spacing={5}>
                         <Grid item xs={12} >
                             <Button variant="contained" onClick={() => window.location.reload()}> New Game </Button>
@@ -218,7 +224,7 @@ export default function SudoKu() {
                         </Grid>
                         <Grid item xs={12}>
                             <Button variant="contained" color="error" onClick={submitToAleo} sx={{ marginRight: 3 }}> Verify with Aleo </Button>
-                            <TextField label="Aleo Private Key" variant="standard" value={aleoPrivateKey} onChange={(newValue) => setAleoPrivateKey(newValue.target.value)}></TextField>
+                            <TextField label="Aleo Private Key" variant="standard" value={aleoPrivateKey} sx={{ width: 500 }} onChange={(newValue) => setAleoPrivateKey(newValue.target.value)}></TextField>
                         </Grid>
                         <Grid item xs={12}>
                             <Button variant="contained" color="success" onClick={submitToNoir}> Verify with Noir </Button>

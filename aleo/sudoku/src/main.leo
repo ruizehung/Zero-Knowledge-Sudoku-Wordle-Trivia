@@ -29,10 +29,10 @@ program sudoku.aleo {
     }
 
     record Puzzle {
-        public owner: address,
+        owner: address,
         gates: u64,
-        public solved: bool,
-        public info: PuzzleInfo
+        solved: bool,
+        info: PuzzleInfo
     }
     
     transition solve_puzzle(public puzzle: PuzzleInfo, private solution: PuzzleInfo ) -> Puzzle {    

@@ -50,13 +50,9 @@ router.post('/guess', async (req: Request, res: Response) => {
         res.json({ error: "Player address is required" });
         return
     }
-    if (req.body.player_view_key === "" || req.body.player_view_key == null) {
-        res.json({ error: "Player view key is required" });
-        return
-    }
     const cmd = `snarkos developer execute wordle.aleo guess "${lastestWordleGameStateServerViewRecord}" ${req.body.player_address} "{ c1: ${req.body.guess[0]}u8, c2: ${req.body.guess[1]}u8, c3: ${req.body.guess[2]}u8, c4: ${req.body.guess[3]}u8, c5: ${req.body.guess[4]}u8 }" --private-key ${serverAleoPrivateKey} --query "http://localhost:3030" --broadcast "http://localhost:3030/testnet3/transaction/broadcast"`;
     console.log(cmd);
-    const { stdout: stdout_guess, stderr } = await exec(cmd);
+    const { stdout: stdout_guess, _ } = await exec(cmd);
     console.log('stdout:', stdout_guess);
     console.log('stdout:', stdout_guess.split("\n")[4]);
     const execution_id = stdout_guess.split("\n")[4];

@@ -1,5 +1,5 @@
 import './WordleApp.css';
-import { Box, Button, FormControlLabel, Grid, Paper, Switch, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, FormControlLabel, Grid, Paper, Stack, Switch, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Wordle from './Wordle';
 import { ZKProvider } from './context/ZKProvider';
@@ -9,11 +9,11 @@ import { SolutionHashProvider } from './context/SolutionHashProvider';
 
 export function WordleApp() {
     const [aleoAddress, setAleoAddress] = useState("aleo1alheqp6zm4lfsf640cas2ey4lf6lrp0pqrag754dggaqhfgma5pqvt44zh");
-    const [aleoViewKey, setAleoViewKey] = useState("AViewKey1rweDipjg33qhzwjM2YdLPZ11rkS4j3KBbq2giDt7ENhu");
     const [gameStarted, setGameStarted] = useState(false);
     const [zkFramework, setZkFramework] = useState<ZK_FRAMEWORK>(ZK_FRAMEWORK.ALEO);
     const [solutionHash, setSolutionHash] = useState("");
     const [serverShouldCheat, setServerShouldCheat] = useState(false);
+    const [isWaitingForAleo, setIsWaitingForAleo] = useState(false);
 
     useEffect(() => {
         fetch(`http://127.0.0.1:${ExpressBackendPort}/noir/wordle/should_cheat`, {
@@ -29,6 +29,7 @@ export function WordleApp() {
 
     const startGameWithAleo = async () => {
         setZkFramework(ZK_FRAMEWORK.ALEO);
+        setIsWaitingForAleo(true);
         setGameStarted(false);
         await fetch(`http://127.0.0.1:${ExpressBackendPort}/aleo/wordle/new`, {
             method: "POST",
@@ -38,7 +39,8 @@ export function WordleApp() {
             body: JSON.stringify({
                 player_address: aleoAddress,
             })
-        });
+        });        
+        setIsWaitingForAleo(false);
         setGameStarted(true);
     }
 
@@ -78,7 +80,7 @@ export function WordleApp() {
             marginX: 8,
         }}
     >
-        <ZKProvider.Provider value={{ aleoAddress, aleoViewKey, zkFramework }}>
+        <ZKProvider.Provider value={{ aleoAddress, zkFramework }}>
             <SolutionHashProvider.Provider value={{ solutionHash }}>
                 <Grid container >
                     <Grid item xs={12} sx={{ textAlign: "center", marginBottom: 3 }}>
@@ -86,6 +88,11 @@ export function WordleApp() {
                     </Grid>
 
                     <Grid item xs={5}>
+                        {
+                            isWaitingForAleo && <Stack alignItems="center">
+                                <CircularProgress sx={{ marginTop: 1 }} />
+                            </Stack>
+                        }
                         {
                             gameStarted && <Box className="App">
                                 <Wordle />
@@ -102,9 +109,6 @@ export function WordleApp() {
                                     <Grid item xs={12}>
                                         <TextField label="Aleo Address" variant="standard" value={aleoAddress} onChange={(newValue) => setAleoAddress(newValue.target.value)} sx={{ width: 300 }}></TextField>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField label="Aleo View Key" variant="standard" value={aleoViewKey} onChange={(newValue) => setAleoViewKey(newValue.target.value)} sx={{ width: 300 }}></TextField>
-                                    </Grid>
                                     <Grid item xs={12} >
                                         <Button disabled={gameStarted} variant='contained' onClick={startGameWithAleo}>Start Game</Button>
                                     </Grid>
@@ -119,10 +123,10 @@ export function WordleApp() {
                                 <Button disabled={gameStarted} variant='contained' onClick={startGameWithNoir}>Start Game</Button>
                             </Grid>
                             <Grid item xs={5} >
-                                <Button disabled={!gameStarted} variant='contained' onClick={askServerToChangeSolution}>Simulate server changing solution</Button>
+                                <Button disabled={!gameStarted || zkFramework !== ZK_FRAMEWORK.NOIR} variant='contained' onClick={askServerToChangeSolution}>Simulate server changing solution</Button>
                             </Grid>
                             <Grid item xs={5} >
-                                <FormControlLabel control={<Switch />} checked={serverShouldCheat} onChange={handleSetServerShouldCheat} label="Server Cheat" />
+                                <FormControlLabel control={<Switch />} disabled={!gameStarted || zkFramework !== ZK_FRAMEWORK.NOIR} checked={serverShouldCheat} onChange={handleSetServerShouldCheat} label="Server Cheat" />
                             </Grid>
                         </Grid>
                     </Grid>

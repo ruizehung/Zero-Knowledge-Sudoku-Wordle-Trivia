@@ -99,8 +99,7 @@ const useWordle = () => {
           },
           body: JSON.stringify({
             guess: guess_array,
-            player_address: zkContext.aleoAddress,
-            player_view_key: zkContext.aleoViewKey
+            player_address: zkContext.aleoAddress
           })
         });
         const data = await response.json();

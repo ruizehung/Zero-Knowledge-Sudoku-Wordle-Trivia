@@ -5,7 +5,7 @@ const exec = util.promisify(require('child_process').exec);
 
 const router: Router = express.Router();
 
-router.post('/sudoku', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
     console.log(`${req.originalUrl} called with ${JSON.stringify(req.body)}`);
     if (req.body.private_key === "" || req.body.private_key == null) {
         res.json({ error: "Player private_key is required" });

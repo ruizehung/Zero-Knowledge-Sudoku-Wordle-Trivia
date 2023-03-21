@@ -1,6 +1,6 @@
-# Aleo-Aztec-Game
+# Zero-Knowledge Sudoku Wordle Trivia
 
-This repository contains the implementation of zero-knowledge version of Sudoku, Wordle, and Trivia game using both the [Aleo](https://www.aleo.org/) and [Noir](https://noir-lang.org/).
+This repository contains the implementation of Zero-Knowledge Sudoku, Wordle, and Trivia games using both the [Aleo](https://www.aleo.org/) and [Noir](https://noir-lang.org/).
 
 ## Setup
 ### Noir
@@ -64,4 +64,5 @@ Note: Testing noir circuits individually works. But if you test them all at once
 
 
 ### Credits 
+- Sudoku Noir code is copied from https://github.com/guipublic/crypdoku
 - Wordle frontend is copied from https://github.com/iamshaunjp/React-Wordle/tree/lesson-15

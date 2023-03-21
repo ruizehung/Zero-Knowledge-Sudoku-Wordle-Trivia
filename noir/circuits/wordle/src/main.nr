@@ -7,6 +7,11 @@ use dep::std;
 // 1 - wrong
 // 2 - solution contains character but wrong position
 // 3 - solution contains character and the position is correct
+
+// Since the solution hash is a public input, the client can verify that the solution on server hasn't changed
+// over each round of guess by checking that the solution_hash is consistent in the proof. Additionally, 
+// the client can verify that the server compute the correct guess_result by checking the guess and guess_result
+// public input in proof.
 fn main(solution_hash: pub Field, solution:[Field;5], guess: pub [Field;5], guess_result: pub [Field;5]) {
     let guess_result_: [Field;5] = check_guess(solution, guess);
     for i in 0..5 {

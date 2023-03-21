@@ -4,13 +4,16 @@ import util from "util";
 const exec = util.promisify(require('child_process').exec);
 
 const router: Router = express.Router();
-const serverAleoPrivateKey = process.env.ALEO_PRIVATE_KEY;
-const serverAleoViewKey = process.env.ALEO_VIEW_KEY;
 
 router.get('/transaction/:transaction_id', async (req: Request, res: Response) => {
     console.log(`${req.originalUrl} called`);
-    const execution_id_get_response = await fetch(`http://0.0.0.0:3030/testnet3/transaction/${req.params.transaction_id}`);
-    res.json(await execution_id_get_response.json());
+    try {
+        const execution_id_get_response = await fetch(`http://0.0.0.0:3030/testnet3/transaction/${req.params.transaction_id}`);
+        res.json(await execution_id_get_response.json());
+    } catch (error) {
+        console.log(error);
+        res.json(error);
+    }
 });
 
 router.post('/decrypt', async (req: Request, res: Response) => {
