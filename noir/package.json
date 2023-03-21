@@ -3,7 +3,7 @@
   "scripts": {
     "deploy": "hardhat run scripts/deploy.ts --network localhost",
     "generate-contracts": "hardhat run scripts/generateContracts.ts",
-    "generate-compiled-circuits": "ts-node scripts/generateCompiledCircuits.ts",
+    "generate-acir": "ts-node scripts/generateAcir.ts",
     "test-sudoku": "hardhat test test/sudokuVerifier.ts",
     "test-wordle": "hardhat test test/wordleVerifier.ts",
     "test-trivia": "hardhat test test/triviaVerifier.ts"
