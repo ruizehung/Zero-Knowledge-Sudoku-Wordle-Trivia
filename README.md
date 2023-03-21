@@ -14,7 +14,7 @@ This repository contains the implementation of zero-knowledge version of Sudoku,
 - Follow https://developer.aleo.org/testnet/getting_started/deploy_execute to setup a local node in development mode till step 4
   - Note: The snarkOS commit hash I used is 8cfa1657746bcdc372207f788f093b3060aac350
 - To deploy `sudoku.aleo`:
-    - `cd leo/sudoku && leo build`
+    - `cd aleo/sudoku && leo build`
     - `export PRIVATE_KEY=<PRIVATE_KEY>`
     - Run
     ```
@@ -23,7 +23,7 @@ This repository contains the implementation of zero-knowledge version of Sudoku,
     --record <Record_that_you_just_transferred_credits_to>
     ```
 - To deploy `wordle.aleo`:
-    - `cd leo/wordle && leo build`
+    - `cd aleo/wordle && leo build`
     - `export PRIVATE_KEY=<PRIVATE_KEY>`
     - Run
     ```
@@ -32,7 +32,7 @@ This repository contains the implementation of zero-knowledge version of Sudoku,
     --record <Record_that_you_just_transferred_credits_to>
     ```
 - To deploy `trivia.aleo`:
-    - `cd leo/trivia && leo build`
+    - `cd aleo/trivia && leo build`
     - `export PRIVATE_KEY=<PRIVATE_KEY>`
     - Run
     ```
