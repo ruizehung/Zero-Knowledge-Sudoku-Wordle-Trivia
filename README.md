@@ -37,4 +37,5 @@
 
 
 
+Note: Testing noir circuits individually works. But if you test them all at once with `npx hardhat test` some might fail. 
 Note: Wordle frontend is copied from https://github.com/iamshaunjp/React-Wordle/tree/lesson-15

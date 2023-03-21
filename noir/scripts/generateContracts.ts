@@ -5,7 +5,8 @@ import { writeFileSync } from 'fs';
 
 const CIRCUITS = [
   { contract: 'SudokuVerifier', dir: 'sudoku', name: 'Sudoku' },
-  { contract: 'WordleVerifier', dir: 'wordle', name: 'Wordle' }
+  { contract: 'WordleVerifier', dir: 'wordle', name: 'Wordle' },
+  { contract: 'TriviaVerifier', dir: 'trivia', name: 'Trivia' }
 ]
 
 async function generateVerifierContracts() {

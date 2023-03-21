@@ -7,7 +7,6 @@ use dep::std;
 // 1 - wrong
 // 2 - solution contains character but wrong position
 // 3 - solution contains character and the position is correct
-// TODO: Add solution hash
 fn main(solution_hash: pub Field, solution:[Field;5], guess: pub [Field;5], guess_result: pub [Field;5]) {
     let guess_result_: [Field;5] = check_guess(solution, guess);
     for i in 0..5 {
