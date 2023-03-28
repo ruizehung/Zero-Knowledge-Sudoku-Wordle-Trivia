@@ -29,6 +29,8 @@ leo run new_quiz aleo1alheqp6zm4lfsf640cas2ey4lf6lrp0pqrag754dggaqhfgma5pqvt44zh
     answer: 6238711732field
 }" 
 
+# There is a bug from aleo in the output of the following command ...
+# The formating of quiz filed is incorrect. There are extra currly braces
 leo run answer_question "{
     owner: aleo1f277ah0ecsknssaw7w3zz68tsj6cjag5jcrgu8qfdkec0fp52vysuuy9s2.private,
     gates: 0u64.private,
@@ -36,12 +38,12 @@ leo run answer_question "{
     quiz_id: 2565412135370744165803100348446095394755405371478854334589472736418113055445field.private,
     quiz: {
         question1: {
-        prompt: 1234field.private,
-        option1: 34563456787field.private,
-        option2: 76578field.private,
-        option3: 2345432field.private,
-        option4: 52635745635field.private,
-        answer: 2345432field.private
+            prompt: 1234field.private,
+            option1: 34563456787field.private,
+            option2: 76578field.private,
+            option3: 2345432field.private,
+            option4: 52635745635field.private,
+            answer: 2345432field.private
         }, 
         question2: {
             prompt: 456789765field.private,

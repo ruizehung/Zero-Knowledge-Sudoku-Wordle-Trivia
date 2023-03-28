@@ -6,7 +6,8 @@ import { ethers } from "ethers";
 import { Buffer } from 'buffer';
 
 import SudokuVerifierABI from "../../abi/SudokuVerifier.json";
-import { ExpressBackendPort, SudoKuVerifierNoirContractAddress } from '../../constant';
+import ZK_NFT_ABI from "../../abi/ZK_NFT.json";
+import { ExpressBackendPort, SudoKuVerifierNoirContractAddress, ZK_NFT_ContractAddress } from '../../constant';
 
 export default function SudoKu() {
     const [puzzleArray, setPuzzleArray] = useState<number[][]>([]); // The original puzzle
@@ -179,6 +180,48 @@ export default function SudoKu() {
         setIsWaitingForNoirResponse(false);
     }
 
+    const mintNFT = async () => {
+        setIsWaitingForNoirResponse(true);
+        setOpenNoirDialog(true);
+        let proof = [];
+        try {
+            const response = await fetchWithTimeout(`http://127.0.0.1:${ExpressBackendPort}/noir/sudoku/proof`, {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ "puzzle": puzzleArray, "solution": getUserSolutionArray() }),
+                timeout: 240000 // 4 minute
+            });
+            const responseData = await response.json();
+            console.log(responseData);
+            proof = responseData["proof"];
+        } catch (error: any) {
+            if (error.name === 'AbortError') {
+                setAleoResponse("Request timed out!");
+            }
+            return
+        }
+        // Proof is of type number[]
+        const bytes = Buffer.from(proof);
+        console.log(bytes);
+
+        const provider = new ethers.BrowserProvider(window.ethereum!);
+        const address = await provider.send("eth_requestAccounts", []);
+        const signer = await provider.getSigner();
+        const ZK_NFT = new ethers.Contract(ZK_NFT_ContractAddress, ZK_NFT_ABI["abi"], signer);
+        try {
+            const result = await ZK_NFT.mintSudokuNFT(address[0], "some uri", bytes);
+            console.log(result);
+            setNoirResponse(JSON.stringify(result));
+        } catch (error: any) {
+            console.log(error);
+            setNoirResponse(error.toString());
+        }
+        setIsWaitingForNoirResponse(false);
+    }
+
     return <Paper
         sx={{
             p: 2,
@@ -226,8 +269,11 @@ export default function SudoKu() {
                             <Button variant="contained" color="error" onClick={submitToAleo} sx={{ marginRight: 3 }}> Verify with Aleo </Button>
                             <TextField label="Aleo Private Key" variant="standard" value={aleoPrivateKey} sx={{ width: 500 }} onChange={(newValue) => setAleoPrivateKey(newValue.target.value)}></TextField>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={3}>
                             <Button variant="contained" color="success" onClick={submitToNoir}> Verify with Noir </Button>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Button variant="contained" color="success" onClick={mintNFT}> Mint NFT </Button>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -272,7 +318,7 @@ export default function SudoKu() {
             onClose={handleCloseNoirDialog}
         >
             <DialogTitle id="alert-dialog-title">
-                {isWaitingForNoirResponse ? "Your request has been received!" : "Sudoku verifier smart contract response: "}
+                {isWaitingForNoirResponse ? "Your request has been received!" : "Smart contract response: "}
             </DialogTitle>
             <DialogContent>
                 {

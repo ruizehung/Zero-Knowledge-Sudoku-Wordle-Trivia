@@ -3,14 +3,21 @@ import { ethers } from "hardhat";
 const CONTRACTS = ["SudokuVerifier", "WordleVerifier", "TriviaVerifier"];
 
 async function main() {
-  for (const contract of CONTRACTS) {
-    const c = await ethers.getContractFactory(contract);
-    const deployed_contract = await c.deploy();
-  
-    console.log(
-      `${contract} deployed to ${deployed_contract.address}`
-    );
-  }
+  const sudokuVerifier = await ethers.getContractFactory("SudokuVerifier");
+  const sudokuVerifierContract = await sudokuVerifier.deploy();
+  console.log(`SudokuVerifier deployed to ${sudokuVerifierContract.address}`);
+
+  const wordleVerifier = await ethers.getContractFactory("WordleVerifier");
+  const wordleVerifierContract = await wordleVerifier.deploy();
+  console.log(`WordleVerifier deployed to ${wordleVerifierContract.address}`);
+
+  const triviaVerifier = await ethers.getContractFactory("TriviaVerifier");
+  const triviaVerifierContract = await triviaVerifier.deploy();
+  console.log(`TriviaVerifier deployed to ${triviaVerifierContract.address}`);
+
+  const ZK_NFT = await ethers.getContractFactory("ZK_NFT");
+  const ZK_NFTContract = await ZK_NFT.deploy(sudokuVerifierContract.address);
+  console.log(`ZK_NFT deployed to ${ZK_NFTContract.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
