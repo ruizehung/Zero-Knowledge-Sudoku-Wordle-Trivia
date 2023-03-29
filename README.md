@@ -1,6 +1,14 @@
-# Zero-Knowledge Sudoku Wordle Trivia
+# Zero-Knowledge Sudoku Wordle Trivia Game
 
-This repository contains the implementation of Zero-Knowledge Sudoku, Wordle, and Trivia games using both the [Aleo](https://www.aleo.org/) and [Noir](https://noir-lang.org/).
+This repository contains my implementation of Zero-Knowledge Sudoku, Wordle, and Trivia games using both the [Aleo](https://www.aleo.org/) and [Noir](https://noir-lang.org/). They are not 100% complete and are not fully tested. But they are at least
+playable and demonstrate the potential of using both Aleo and Noir to build simple games.
+
+Video walkthroughs:
+- [Sudoku walkthrough](https://www.youtube.com/watch?v=luYJk1Hxft0)
+- [Wordle walkthrough](https://youtu.be/XZufOQPAB6U)
+- [Trivia walkthrough](https://youtu.be/UsbFDx2TjwU)
+
+Disclaimer: These videos are more for the purpose of explaining to my future self what my code is doing. If you want you can watch these videos at your own benefit 🙂.
 
 ## Setup
 ### Noir
@@ -60,8 +68,10 @@ This repository contains the implementation of Zero-Knowledge Sudoku, Wordle, an
 - `npm run test-wordle`
 - `npm run test-trivial`
 
-Note: Testing noir circuits individually works. But if you test them all at once with `npx hardhat test` some might fail. 
 
+### Notes
+- Testing noir circuits individually works. But if you test them all at once with `npx hardhat test` some might fail. 
+- When minting sudoku NFT, in case you run in to errors like "Nonce too high. Expected nonce to be 0 but got 2. Note that transactions can't be queued when automining," check this out: https://medium.com/@thelasthash/solved-nonce-too-high-error-with-metamask-and-hardhat-adc66f092cd
 
 ### Credits 
 - Sudoku Noir code is copied from https://github.com/guipublic/crypdoku
