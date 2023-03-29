@@ -74,5 +74,5 @@ Disclaimer: These videos are more for the purpose of explaining to my future sel
 - When minting sudoku NFT, in case you run in to errors like "Nonce too high. Expected nonce to be 0 but got 2. Note that transactions can't be queued when automining," check this out: https://medium.com/@thelasthash/solved-nonce-too-high-error-with-metamask-and-hardhat-adc66f092cd
 
 ### Credits 
-- Sudoku Noir code is copied from https://github.com/guipublic/crypdoku
-- Wordle frontend is copied from https://github.com/iamshaunjp/React-Wordle/tree/lesson-15
+- Sudoku Noir code is modified from https://github.com/guipublic/crypdoku
+- Wordle frontend code is modified from https://github.com/iamshaunjp/React-Wordle/tree/lesson-15
