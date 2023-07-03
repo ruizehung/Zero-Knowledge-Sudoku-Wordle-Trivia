@@ -1,6 +1,6 @@
 # Zero-Knowledge Sudoku Wordle Trivia Game
 
-This repository contains my implementation of Zero-Knowledge Sudoku, Wordle, and Trivia games using both the [Aleo](https://www.aleo.org/) and [Noir](https://noir-lang.org/). They are not 100% complete and are not fully tested. But they are at least
+This repository contains my implementation of Zero-Knowledge Sudoku, Wordle, and Trivia games using both [Aleo](https://www.aleo.org/) and [Noir](https://noir-lang.org/). They are not 100% complete and are not fully tested. But they are at least
 playable and demonstrate the potential of using both Aleo and Noir to build simple games.
 
 Video walkthroughs:
